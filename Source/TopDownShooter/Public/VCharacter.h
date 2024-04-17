@@ -15,16 +15,24 @@ public:
 	// Sets default values for this character's properties
 	AVCharacter();
 
+	FVector GetPointUnderCursor();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* CameraComp;
+	UPROPERTY(VisibleAnywhere)
+	class UVInteractionComponent* InteractionComp;
+	UPROPERTY(VisibleAnywhere)
+	class UVAttributesComponent* AttributesComp;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void Aim();
 	void RotatePlayer(FVector Direction);
+	void Interact();
 
 public:	
 	// Called every frame

@@ -6,14 +6,21 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "VInteractionComponent.h"
+#include "VAttributesComponent.h"
 
 // Sets default values
 AVCharacter::AVCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	InteractionComp = CreateDefaultSubobject<UVInteractionComponent>("InteractionComponent");
+	AttributesComp = CreateDefaultSubobject<UVAttributesComponent>("AttributesComponent");
+	
 	CameraComp->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -29,17 +36,7 @@ void AVCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(PlayerController)
-	{
-		FHitResult HitResult;
-		PlayerController->GetHitResultUnderCursor(
-			ECollisionChannel::ECC_Visibility,
-			false,
-			HitResult);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 30.f, 16, FColor::Red);
-		RotatePlayer(HitResult.ImpactPoint);
-	}
-
+	Aim();
 }
 
 // Called to bind functionality to input
@@ -49,7 +46,7 @@ void AVCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AVCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AVCharacter::MoveRight);
-
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AVCharacter::Interact);
 }
 
 void AVCharacter::MoveForward(float Value)
@@ -64,6 +61,21 @@ void AVCharacter::MoveRight(float Value)
 	AddMovementInput(ControlVec, Value);
 }
 
+FVector AVCharacter::GetPointUnderCursor()
+{
+	if (PlayerController)
+	{
+		FHitResult HitResult;
+		PlayerController->GetHitResultUnderCursor(
+			ECollisionChannel::ECC_Visibility,
+			false,
+			HitResult);
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 30.f, 16, FColor::Red);
+		return HitResult.ImpactPoint;
+	}
+	return FVector::ZeroVector;
+}
+
 void AVCharacter::RotatePlayer(FVector Direction)
 {
 	FVector ToTarget = Direction - GetMesh()->GetComponentLocation();
@@ -73,4 +85,15 @@ void AVCharacter::RotatePlayer(FVector Direction)
 		LookAtRotation, 
 		UGameplayStatics::GetWorldDeltaSeconds(this), 
 		10.f));
+}
+
+void AVCharacter::Interact()
+{
+	InteractionComp->Interact();
+}
+
+void AVCharacter::Aim()
+{
+	FVector Direction = GetPointUnderCursor();
+	RotatePlayer(Direction);
 }
