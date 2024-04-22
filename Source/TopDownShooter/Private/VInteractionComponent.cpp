@@ -38,17 +38,19 @@ void UVInteractionComponent::Interact()
 {
 	AVCharacter* Owner = Cast<AVCharacter>(GetOwner());
 	FVector CursorPoint = Owner->GetPointUnderCursor();
-	if (CursorPoint == Owner->GetActorLocation())
+	float Distance = FVector::Dist(CursorPoint, Owner->GetActorLocation());
+	if (Distance > TraceLength)
 	{
 		return;
 	}
 
 	FHitResult Hit;
-	FVector Start = GetOwner()->GetActorLocation();
+	FVector Start = Owner->GetActorLocation();
 	FVector End = CursorPoint;
 	FCollisionShape Shape;
 	Shape.MakeSphere(TraceSphereRadius);
 	GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, ECollisionChannel::ECC_Visibility, Shape);
+	//GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECollisionChannel::ECC_Visibility);
 	AActor* HitActor = Hit.GetActor();
 
 	if (HitActor)
@@ -57,9 +59,8 @@ void UVInteractionComponent::Interact()
 		{
 			APawn* OwnerPawn = Cast<APawn>(GetOwner());
 			IVGameplayInterface::Execute_Interact(HitActor, OwnerPawn);
-			DrawDebugSphere(GetWorld(), End, 30.f, 16, FColor::Green);
+			return;
 		}
-		DrawDebugSphere(GetWorld(), End, 30.f, 16, FColor::Red);
 	}
 }
 

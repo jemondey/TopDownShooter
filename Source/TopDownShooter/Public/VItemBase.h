@@ -22,8 +22,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+	UPROPERTY(VisibleAnywhere)
+	class USphereComponent* SphereComp;
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* MeshComp;
+	UPROPERTY(EditAnywhere)
+	UDataAsset* ItemDataAsset;
 
 public:	
 	// Called every frame

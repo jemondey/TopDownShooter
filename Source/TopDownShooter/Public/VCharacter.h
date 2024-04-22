@@ -16,6 +16,10 @@ public:
 	AVCharacter();
 
 	FVector GetPointUnderCursor();
+	FVector GetCameraLocation();
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AVGunBase> EquipedWeapon;
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,15 +28,22 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* CameraComp;
 	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* SpringArmComp;
+	UPROPERTY(VisibleAnywhere)
 	class UVInteractionComponent* InteractionComp;
 	UPROPERTY(VisibleAnywhere)
 	class UVAttributesComponent* AttributesComp;
+
+	
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void Aim();
 	void RotatePlayer(FVector Direction);
 	void Interact();
+	void Attack();
+	void StopAttack();
+	void Reload();
 
 public:	
 	// Called every frame

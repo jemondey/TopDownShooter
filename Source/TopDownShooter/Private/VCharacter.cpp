@@ -8,6 +8,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "VInteractionComponent.h"
 #include "VAttributesComponent.h"
+#include "VGunBase.h"
+#include "VGameplayInterface.h"
+#include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
 AVCharacter::AVCharacter()
@@ -16,10 +19,13 @@ AVCharacter::AVCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	InteractionComp = CreateDefaultSubobject<UVInteractionComponent>("InteractionComponent");
 	AttributesComp = CreateDefaultSubobject<UVAttributesComponent>("AttributesComponent");
 	
-	CameraComp->SetupAttachment(RootComponent);
+	SpringArmComp->bUsePawnControlRotation = false;
+	SpringArmComp->SetupAttachment(RootComponent);
+	CameraComp->SetupAttachment(SpringArmComp);
 
 }
 
@@ -47,6 +53,9 @@ void AVCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveForward", this, &AVCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AVCharacter::MoveRight);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AVCharacter::Interact);
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AVCharacter::Attack);
+	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AVCharacter::StopAttack);
+	PlayerInputComponent->BindAction("Reload", IE_Released, this, &AVCharacter::Reload);
 }
 
 void AVCharacter::MoveForward(float Value)
@@ -70,26 +79,74 @@ FVector AVCharacter::GetPointUnderCursor()
 			ECollisionChannel::ECC_Visibility,
 			false,
 			HitResult);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 30.f, 16, FColor::Red);
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.f, 16, FColor::Red);
 		return HitResult.ImpactPoint;
 	}
 	return FVector::ZeroVector;
 }
 
+FVector AVCharacter::GetCameraLocation()
+{
+	return CameraComp->GetComponentLocation();
+}
+
 void AVCharacter::RotatePlayer(FVector Direction)
 {
 	FVector ToTarget = Direction - GetMesh()->GetComponentLocation();
-	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw - 90, 0.0f);
-	GetMesh()->SetWorldRotation(FMath::RInterpTo(
+	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw, 0.0f);
+	SetActorRotation(LookAtRotation);
+	/*GetMesh()->SetWorldRotation(FMath::RInterpTo(
 		GetMesh()->GetComponentRotation(), 
 		LookAtRotation, 
 		UGameplayStatics::GetWorldDeltaSeconds(this), 
-		10.f));
+		10.f));*/
 }
 
 void AVCharacter::Interact()
 {
 	InteractionComp->Interact();
+}
+
+void AVCharacter::StopAttack()
+{
+	if (EquipedWeapon == nullptr)
+	{
+		return;
+	}
+
+	AVGunBase* Gun = Cast<AVGunBase>(EquipedWeapon->GetDefaultObject());
+	if (ensure(Gun))
+	{
+		Gun->ReleaseTrigger(this);
+	}
+}
+
+void AVCharacter::Reload()
+{
+	if (EquipedWeapon == nullptr)
+	{
+		return;
+	}
+
+	AVGunBase* Gun = Cast<AVGunBase>(EquipedWeapon->GetDefaultObject());
+	if (ensure(Gun))
+	{
+		Gun->TryReload(this);
+	}
+}
+
+void AVCharacter::Attack()
+{
+	if (EquipedWeapon == nullptr)
+	{
+		return;
+	}
+
+	AVGunBase* Gun = Cast<AVGunBase>(EquipedWeapon->GetDefaultObject());
+	if (ensure(Gun))
+	{
+		Gun->PullTrigger(this);
+	}
 }
 
 void AVCharacter::Aim()
