@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "VInteractionComponent.h"
 #include "VAttributesComponent.h"
+#include "VInventoryComponent.h"
 #include "VGunBase.h"
 #include "VGameplayInterface.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -22,6 +23,7 @@ AVCharacter::AVCharacter()
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	InteractionComp = CreateDefaultSubobject<UVInteractionComponent>("InteractionComponent");
 	AttributesComp = CreateDefaultSubobject<UVAttributesComponent>("AttributesComponent");
+	InventoryComp = CreateDefaultSubobject<UVInventoryComponent>("InventoryComponent");
 	
 	SpringArmComp->bUsePawnControlRotation = false;
 	SpringArmComp->SetupAttachment(RootComponent);
@@ -56,6 +58,7 @@ void AVCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AVCharacter::Attack);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AVCharacter::StopAttack);
 	PlayerInputComponent->BindAction("Reload", IE_Released, this, &AVCharacter::Reload);
+	PlayerInputComponent->BindAxis("SelectItem", this, &AVCharacter::SelectItem);
 }
 
 void AVCharacter::MoveForward(float Value)
@@ -95,11 +98,6 @@ void AVCharacter::RotatePlayer(FVector Direction)
 	FVector ToTarget = Direction - GetMesh()->GetComponentLocation();
 	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw, 0.0f);
 	SetActorRotation(LookAtRotation);
-	/*GetMesh()->SetWorldRotation(FMath::RInterpTo(
-		GetMesh()->GetComponentRotation(), 
-		LookAtRotation, 
-		UGameplayStatics::GetWorldDeltaSeconds(this), 
-		10.f));*/
 }
 
 void AVCharacter::Interact()
@@ -107,14 +105,34 @@ void AVCharacter::Interact()
 	InteractionComp->Interact();
 }
 
-void AVCharacter::StopAttack()
+void AVCharacter::SelectItem(float Value)
 {
-	if (EquipedWeapon == nullptr)
+	int32 SlotNum = Value;
+	InventoryComp->ChangeItem(SlotNum);
+}
+
+void AVCharacter::Attack()
+{
+	if (InventoryComp->GetCurrentItem() == nullptr)
 	{
 		return;
 	}
 
-	AVGunBase* Gun = Cast<AVGunBase>(EquipedWeapon->GetDefaultObject());
+	AVGunBase* Gun = Cast<AVGunBase>(InventoryComp->GetCurrentItem());
+	if (ensure(Gun))
+	{
+		Gun->PullTrigger(this);
+	}
+}
+
+void AVCharacter::StopAttack()
+{
+	if (InventoryComp->GetCurrentItem() == nullptr)
+	{
+		return;
+	}
+
+	AVGunBase* Gun = Cast<AVGunBase>(InventoryComp->GetCurrentItem());
 	if (ensure(Gun))
 	{
 		Gun->ReleaseTrigger(this);
@@ -123,29 +141,15 @@ void AVCharacter::StopAttack()
 
 void AVCharacter::Reload()
 {
-	if (EquipedWeapon == nullptr)
+	if (InventoryComp->GetCurrentItem() == nullptr)
 	{
 		return;
 	}
 
-	AVGunBase* Gun = Cast<AVGunBase>(EquipedWeapon->GetDefaultObject());
+	AVGunBase* Gun = Cast<AVGunBase>(InventoryComp->GetCurrentItem());
 	if (ensure(Gun))
 	{
 		Gun->TryReload(this);
-	}
-}
-
-void AVCharacter::Attack()
-{
-	if (EquipedWeapon == nullptr)
-	{
-		return;
-	}
-
-	AVGunBase* Gun = Cast<AVGunBase>(EquipedWeapon->GetDefaultObject());
-	if (ensure(Gun))
-	{
-		Gun->PullTrigger(this);
 	}
 }
 

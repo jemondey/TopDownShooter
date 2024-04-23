@@ -18,6 +18,9 @@ public:
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
+	FName GetCarrySocketName();
+	FName GetHandSocketName();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,8 +31,18 @@ protected:
 	class USphereComponent* SphereComp;
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* MeshComp;
-	UPROPERTY(EditAnywhere)
+
+	UPROPERTY(EditInstanceOnly, Category = "DataAsset")
 	UDataAsset* ItemDataAsset;
+
+	UPROPERTY(VisibleAnywhere, Category = "DataAsset")
+	TSubclassOf<AActor> ActorToAdd;
+	UPROPERTY(VisibleAnywhere, Category = "DataAsset")
+	int32 SlotNum;
+	UPROPERTY(VisibleAnywhere, Category = "DataAsset")
+	FName HandSocket;
+	UPROPERTY(VisibleAnywhere, Category = "DataAsset")
+	FName CarrySocket;
 
 public:	
 	// Called every frame

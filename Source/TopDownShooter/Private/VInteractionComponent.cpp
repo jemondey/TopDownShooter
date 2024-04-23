@@ -4,6 +4,7 @@
 #include "VInteractionComponent.h"
 #include "VGameplayInterface.h"
 #include "VCharacter.h"
+#include "VInventoryComponent.h"
 
 // Sets default values for this component's properties
 UVInteractionComponent::UVInteractionComponent()
@@ -60,7 +61,9 @@ void UVInteractionComponent::Interact()
 			APawn* OwnerPawn = Cast<APawn>(GetOwner());
 			IVGameplayInterface::Execute_Interact(HitActor, OwnerPawn);
 			return;
+
 		}
 	}
+	
 }
 

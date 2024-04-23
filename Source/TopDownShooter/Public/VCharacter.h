@@ -18,9 +18,6 @@ public:
 	FVector GetPointUnderCursor();
 	FVector GetCameraLocation();
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class AVGunBase> EquipedWeapon;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -33,8 +30,8 @@ protected:
 	class UVInteractionComponent* InteractionComp;
 	UPROPERTY(VisibleAnywhere)
 	class UVAttributesComponent* AttributesComp;
-
-	
+	UPROPERTY(VisibleAnywhere)
+	class UVInventoryComponent* InventoryComp;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -44,6 +41,7 @@ protected:
 	void Attack();
 	void StopAttack();
 	void Reload();
+	void SelectItem(float Value);
 
 public:	
 	// Called every frame
