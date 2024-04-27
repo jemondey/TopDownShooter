@@ -43,6 +43,8 @@ protected:
 	FName HandSocket;
 	UPROPERTY(VisibleAnywhere, Category = "DataAsset")
 	FName CarrySocket;
+	UPROPERTY(VisibleAnywhere, Category = "DataAsset")
+	bool bCanBeCarried;
 
 public:	
 	// Called every frame

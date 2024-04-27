@@ -10,6 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemChanged, ACharacter*, OwningCharacter, int32, SlotNumber);
 
 class UVItemDataAsset;
+class AVGunBase;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOPDOWNSHOOTER_API UVInventoryComponent : public UActorComponent
@@ -27,6 +28,7 @@ public:
 
 	void GrabItem(AActor* Item, UVItemDataAsset* DataAsset, int32 Slot, FName CarrySocket);
 	AActor* GetCurrentItem();
+	AActor* FindActor(TSubclassOf<AActor> ActorToFind);
 
 protected:
 	// Called when the game starts

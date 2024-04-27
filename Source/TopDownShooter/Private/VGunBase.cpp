@@ -13,9 +13,8 @@ AVGunBase::AVGunBase()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshComp->SetupAttachment(RootComponent);
-	MaxAmmoAmount = 15;
-	CurrentAmmoAmount = MaxAmmoAmount;
 	bCanShoot = true;
+	CarryAmmoAmount = 0;
 }
 
 void AVGunBase::Attack_Implementation(APawn* InstigatorPawn)
@@ -27,7 +26,7 @@ void AVGunBase::Attack_Implementation(APawn* InstigatorPawn)
 void AVGunBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CurrentAmmoAmount = MaxAmmoAmount;
 }
 
 void AVGunBase::Shoot()
@@ -59,6 +58,7 @@ void AVGunBase::Shoot()
 			FString MessageG = "Spawned!";
 			GEngine->AddOnScreenDebugMessage(1, 0.4f, FColor::Green, MessageG);
 			CurrentAmmoAmount -= 1;
+			CurrentAmmoAmount = FMath::Clamp(CurrentAmmoAmount, 0, MaxAmmoAmount);
 		}
 	}
 }
@@ -81,6 +81,11 @@ void AVGunBase::ReleaseTrigger(APawn* InstigatorPawn)
 
 void AVGunBase::TryReload(APawn* InstigatorPawn)
 {
+	if (CarryAmmoAmount <= 0)
+	{
+		return;
+	}
+
 	if (CurrentAmmoAmount < MaxAmmoAmount)
 	{
 		FString Message = "RELOADING";
@@ -90,18 +95,31 @@ void AVGunBase::TryReload(APawn* InstigatorPawn)
 	}
 }
 
+void AVGunBase::SetCarryAmmoAmount(int32 Amount)
+{
+	CarryAmmoAmount += Amount;
+}
+
 void AVGunBase::Reload()
 {
 	FString Message = "RELOADED";
 	GEngine->AddOnScreenDebugMessage(0, 0.4f, FColor::Green, Message);
 	bCanShoot = true;
-	CurrentAmmoAmount = MaxAmmoAmount;
+	int32 AmountToLoad = MaxAmmoAmount - CurrentAmmoAmount;
+	AmountToLoad = FMath::Clamp(AmountToLoad, 0, CarryAmmoAmount);
+	CarryAmmoAmount -= AmountToLoad;
+	CurrentAmmoAmount += AmountToLoad;
 }
 
 // Called every frame
 void AVGunBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FString MSG = "CarryAmmo " + FString::FromInt(CarryAmmoAmount);
+	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Purple, MSG);
+	FString MSG1 = "CurrentAmmo " + FString::FromInt(CurrentAmmoAmount);
+	GEngine->AddOnScreenDebugMessage(11, 1, FColor::Purple, MSG1);
 
 }
 

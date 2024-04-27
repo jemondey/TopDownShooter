@@ -51,7 +51,6 @@ void UVInteractionComponent::Interact()
 	FCollisionShape Shape;
 	Shape.MakeSphere(TraceSphereRadius);
 	GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, ECollisionChannel::ECC_Visibility, Shape);
-	//GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECollisionChannel::ECC_Visibility);
 	AActor* HitActor = Hit.GetActor();
 
 	if (HitActor)

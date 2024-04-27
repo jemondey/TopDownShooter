@@ -22,14 +22,7 @@ public:
 	void ReleaseTrigger(APawn* InstigatorPawn);
 	void TryReload(APawn* InstigatorPawn);
 
-private:
-
-	FTimerHandle ShootHandle;
-	FTimerHandle ReloadHandle;
-
-	AActor* InstigatorActor;
-
-	void Reload();
+	void SetCarryAmmoAmount(int32 Amount);
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,7 +30,12 @@ protected:
 
 	
 	void Shoot();
+	void Reload();
 	
+	FTimerHandle ShootHandle;
+	FTimerHandle ReloadHandle;
+
+	AActor* InstigatorActor;
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MeshComp;
@@ -51,11 +49,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Gun Properties")
 	int32 MaxAmmoAmount;
 	int32 CurrentAmmoAmount;
+	int32 CarryAmmoAmount;
 	UPROPERTY(EditAnywhere, Category = "Gun Properties")
 	bool bIsAutoFire;
 	bool bCanShoot;
-
-
 
 public:	
 	// Called every frame

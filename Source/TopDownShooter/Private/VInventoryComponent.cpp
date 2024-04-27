@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "VItemBase.h"
 #include "VItemDataAsset.h"
+#include "VGunBase.h"
 
 // Sets default values for this component's properties
 UVInventoryComponent::UVInventoryComponent()
@@ -111,6 +112,7 @@ void UVInventoryComponent::AssignSlot(AActor* Item, UVItemDataAsset* DataAsset, 
 				SlotsDataArray[Index] = DataAsset;
 				return;
 			}
+			return;
 		}
 	}
 	NewItem = Item;
@@ -152,9 +154,26 @@ void UVInventoryComponent::GrabItem(AActor* Item, UVItemDataAsset* DataAsset, in
 
 AActor* UVInventoryComponent::GetCurrentItem()
 {
-	if(CurrentItem!= nullptr)
+	if(CurrentItem != nullptr)
 	{
 		return CurrentItem;
+	}
+	return nullptr;
+}
+
+AActor* UVInventoryComponent::FindActor(TSubclassOf<AActor> ActorToFind)
+{
+	if (!ensure(ActorToFind))
+	{
+		return nullptr;
+	}
+
+	for (AActor* Actor : SlotsArray)
+	{
+		if (Actor && Actor->GetClass() == ActorToFind)
+		{
+			return Actor;
+		}
 	}
 	return nullptr;
 }
