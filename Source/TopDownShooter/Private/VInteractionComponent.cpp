@@ -45,12 +45,14 @@ void UVInteractionComponent::Interact()
 		return;
 	}
 
+	FCollisionObjectQueryParams QueryParams;
+	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	FHitResult Hit;
-	FVector Start = Owner->GetActorLocation();
-	FVector End = CursorPoint;
+	FVector Start = Owner->GetCameraLocation();
+	FVector End = Start + (((CursorPoint - Start).Rotation()).Vector().GetSafeNormal() * 1000);
 	FCollisionShape Shape;
 	Shape.MakeSphere(TraceSphereRadius);
-	GetWorld()->SweepSingleByChannel(Hit, Start, End, FQuat::Identity, ECollisionChannel::ECC_Visibility, Shape);
+	GetWorld()->SweepSingleByObjectType(Hit, Start, End, FQuat::Identity, QueryParams, Shape);
 	AActor* HitActor = Hit.GetActor();
 
 	if (HitActor)

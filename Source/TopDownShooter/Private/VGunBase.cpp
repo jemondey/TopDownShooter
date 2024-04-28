@@ -38,8 +38,6 @@ void AVGunBase::Shoot()
 		return;
 	}
 
-	FString Message = "Pow!";
-	GEngine->AddOnScreenDebugMessage(0, 0.4f, FColor::Green, Message);
 	if (AmmoClass)
 	{
 		AVCharacter* CH = Cast<AVCharacter>(InstigatorActor);
@@ -55,8 +53,6 @@ void AVGunBase::Shoot()
 
 		if(InstigatorActor->GetWorld()->SpawnActor<AActor>(AmmoClass, Location, Rotation, SpawnParams))
 		{
-			FString MessageG = "Spawned!";
-			GEngine->AddOnScreenDebugMessage(1, 0.4f, FColor::Green, MessageG);
 			CurrentAmmoAmount -= 1;
 			CurrentAmmoAmount = FMath::Clamp(CurrentAmmoAmount, 0, MaxAmmoAmount);
 		}

@@ -14,13 +14,12 @@ AVItemBase::AVItemBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComponent");
-	
 	SphereComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	RootComponent = SphereComp;
 	
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
+	MeshComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	MeshComp->SetupAttachment(RootComponent);
-	
 }
 
 // Called when the game starts or when spawned
@@ -36,12 +35,12 @@ void AVItemBase::OnConstruction(const FTransform& Transform)
 
 	if (ItemDataAsset)
 	{
-		UVItemDataAsset* DA = Cast<UVItemDataAsset>(ItemDataAsset);
-		MeshComp->SetStaticMesh(DA->StaticMesh);
-		ActorToAdd = DA->ActorToAdd;
-		SlotNum = DA->SlotNum;
-		HandSocket = DA->HandSocket;
-		CarrySocket = DA->CarrySocket;
+		UVItemDataAsset* DataAsset = Cast<UVItemDataAsset>(ItemDataAsset);
+		MeshComp->SetStaticMesh(DataAsset->StaticMesh);
+		ActorToAdd = DataAsset->ActorToAdd;
+		SlotNum = DataAsset->SlotNum;
+		HandSocket = DataAsset->HandSocket;
+		CarrySocket = DataAsset->CarrySocket;
 	}
 }
 
@@ -54,7 +53,7 @@ void AVItemBase::Tick(float DeltaTime)
 
 void AVItemBase::Interact_Implementation(APawn* InstigatorPawn)
 {
-	UVItemDataAsset* DA = Cast<UVItemDataAsset>(ItemDataAsset);
+	UVItemDataAsset* DataAsset = Cast<UVItemDataAsset>(ItemDataAsset);
 	AActor* InstigatorActor = Cast<AActor>(InstigatorPawn);
 
 	FVector Location = InstigatorActor->GetActorLocation();
@@ -66,7 +65,7 @@ void AVItemBase::Interact_Implementation(APawn* InstigatorPawn)
 
 	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorToAdd, Location, Rotation, SpawnParams);
 	UVInventoryComponent* CMP = Cast<UVInventoryComponent>(InstigatorActor->FindComponentByClass(UVInventoryComponent::StaticClass()));
-	CMP->GrabItem(SpawnedActor, DA, SlotNum, CarrySocket);
+	CMP->GrabItem(SpawnedActor, DataAsset, SlotNum, CarrySocket);
 }
 
 FName AVItemBase::GetCarrySocketName()
