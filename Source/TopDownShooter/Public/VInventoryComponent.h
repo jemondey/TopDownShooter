@@ -27,8 +27,10 @@ public:
 	void ChangeItem(int32 Slot);
 
 	void GrabItem(AActor* Item, UVItemDataAsset* DataAsset, int32 Slot, FName CarrySocket);
+	void UseHealBox();
 	AActor* GetCurrentItem();
 	AActor* FindActor(TSubclassOf<AActor> ActorToFind);
+	void SetSlotsNull(int32 SlotNum);
 
 protected:
 	// Called when the game starts

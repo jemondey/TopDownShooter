@@ -22,7 +22,8 @@ void UVAttributesComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-
+	FString Mesg = "Health = " + FString::SanitizeFloat(Health);
+	GEngine->AddOnScreenDebugMessage(12, 1, FColor::Red, Mesg);
 }
 
 void UVAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)

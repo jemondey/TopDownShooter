@@ -42,6 +42,7 @@ protected:
 	void StopAttack();
 	void Reload();
 	void SelectItem(float Value);
+	void Heal();
 
 public:	
 	// Called every frame

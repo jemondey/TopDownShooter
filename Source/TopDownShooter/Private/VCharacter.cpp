@@ -54,11 +54,12 @@ void AVCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AVCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AVCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("SelectItem", this, &AVCharacter::SelectItem);
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AVCharacter::Interact);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AVCharacter::Attack);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AVCharacter::StopAttack);
 	PlayerInputComponent->BindAction("Reload", IE_Released, this, &AVCharacter::Reload);
-	PlayerInputComponent->BindAxis("SelectItem", this, &AVCharacter::SelectItem);
+	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &AVCharacter::Heal);
 }
 
 void AVCharacter::MoveForward(float Value)
@@ -109,6 +110,11 @@ void AVCharacter::SelectItem(float Value)
 {
 	int32 SlotNum = Value;
 	InventoryComp->ChangeItem(SlotNum);
+}
+
+void AVCharacter::Heal()
+{
+	InventoryComp->UseHealBox();
 }
 
 void AVCharacter::Attack()
