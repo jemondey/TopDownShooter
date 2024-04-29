@@ -85,7 +85,7 @@ void UVInventoryComponent::ChangeItem(int32 Slot)
 	AttachItem(NewItem, NewItemData, HandSocket);
 	CurrentItem = NewItem;
 	CurrentItemData = NewItemData;
-	OnItemChanged.Broadcast(Cast<ACharacter>(GetOwner()), Slot);
+	OnItemChanged.Broadcast(Cast<ACharacter>(GetOwner()), Slot, CurrentItem);
 }
 
 void UVInventoryComponent::AssignSlot(AActor* Item, UVItemDataAsset* DataAsset, int32 Slot)

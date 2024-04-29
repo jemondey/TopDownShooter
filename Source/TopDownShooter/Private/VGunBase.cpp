@@ -33,8 +33,6 @@ void AVGunBase::Shoot()
 {
 	if (CurrentAmmoAmount <= 0)
 	{
-		FString Message = "OUT OF AMMO!";
-		GEngine->AddOnScreenDebugMessage(0, 0.4f, FColor::Red, Message);
 		return;
 	}
 
@@ -57,6 +55,7 @@ void AVGunBase::Shoot()
 		{
 			CurrentAmmoAmount -= 1;
 			CurrentAmmoAmount = FMath::Clamp(CurrentAmmoAmount, 0, MaxAmmoAmount);
+			OnAmmoChanged.Broadcast(this, CurrentAmmoAmount, CarryAmmoAmount);
 		}
 	}
 }
@@ -96,6 +95,7 @@ void AVGunBase::TryReload(APawn* InstigatorPawn)
 void AVGunBase::SetCarryAmmoAmount(int32 Amount)
 {
 	CarryAmmoAmount += Amount;
+	OnAmmoChanged.Broadcast(this, CurrentAmmoAmount, CarryAmmoAmount);
 }
 
 void AVGunBase::Reload()
@@ -107,17 +107,13 @@ void AVGunBase::Reload()
 	AmountToLoad = FMath::Clamp(AmountToLoad, 0, CarryAmmoAmount);
 	CarryAmmoAmount -= AmountToLoad;
 	CurrentAmmoAmount += AmountToLoad;
+	OnAmmoChanged.Broadcast(this, CurrentAmmoAmount, CarryAmmoAmount);
 }
 
 // Called every frame
 void AVGunBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	FString MSG = "CarryAmmo " + FString::FromInt(CarryAmmoAmount);
-	GEngine->AddOnScreenDebugMessage(10, 1, FColor::Purple, MSG);
-	FString MSG1 = "CurrentAmmo " + FString::FromInt(CurrentAmmoAmount);
-	GEngine->AddOnScreenDebugMessage(11, 1, FColor::Purple, MSG1);
 
 }
 

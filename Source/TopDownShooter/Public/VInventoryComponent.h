@@ -7,7 +7,7 @@
 #include "VInventoryComponent.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemChanged, ACharacter*, OwningCharacter, int32, SlotNumber);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnItemChanged, ACharacter*, OwningCharacter, int32, SlotNumber, AActor*, CurrentItem);
 
 class UVItemDataAsset;
 class AVGunBase;

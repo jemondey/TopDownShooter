@@ -7,6 +7,10 @@
 #include "VGameplayInterface.h"
 #include "VGunBase.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAmmoChanged, AVGunBase*, GunClass, int32, CurrentAmmoAmount, int32, CarryAmmoAmount);
+
+
 UCLASS()
 class TOPDOWNSHOOTER_API AVGunBase : public AActor, public IVGameplayInterface
 {
@@ -17,6 +21,9 @@ public:
 	AVGunBase();
 
 	virtual void Attack_Implementation(APawn* InstigatorPawn) override;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAmmoChanged OnAmmoChanged;
 
 	void PullTrigger(APawn* InstigatorPawn);
 	void ReleaseTrigger(APawn* InstigatorPawn);
@@ -48,7 +55,9 @@ protected:
 	float ReloadTime;
 	UPROPERTY(EditDefaultsOnly, Category = "Gun Properties")
 	int32 MaxAmmoAmount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun Properties")
 	int32 CurrentAmmoAmount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun Properties")
 	int32 CarryAmmoAmount;
 	UPROPERTY(EditAnywhere, Category = "Gun Properties")
 	bool bIsAutoFire;
