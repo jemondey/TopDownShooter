@@ -43,8 +43,10 @@ void AVGunBase::Shoot()
 		AVCharacter* CH = Cast<AVCharacter>(InstigatorActor);
 		FVector Location = CH->GetMesh()->GetAttachChildren().Last()->GetSocketLocation("Fire_Socket");
 		FRotator Rotation = (CH->GetPointUnderCursor() - Location).Rotation();
+		float RotationOffsetMin = CH->GetActorRotation().Yaw - 5;
+		float RotationOffsetMax = CH->GetActorRotation().Yaw + 5;
+		Rotation.Yaw = FMath::Clamp(Rotation.Yaw, RotationOffsetMin, RotationOffsetMax);
 		Rotation.Pitch = 0;
-		Rotation.Roll = 0;
 		
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
