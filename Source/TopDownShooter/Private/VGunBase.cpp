@@ -13,13 +13,7 @@ AVGunBase::AVGunBase()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	MeshComp->SetupAttachment(RootComponent);
-	bCanShoot = true;
 	CarryAmmoAmount = 0;
-}
-
-void AVGunBase::Attack_Implementation(APawn* InstigatorPawn)
-{
-	PullTrigger(InstigatorPawn);
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +21,7 @@ void AVGunBase::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentAmmoAmount = MaxAmmoAmount;
+	bCanShoot = true;
 }
 
 void AVGunBase::Shoot()
@@ -39,10 +34,10 @@ void AVGunBase::Shoot()
 	if (AmmoClass)
 	{
 		AVCharacter* CH = Cast<AVCharacter>(InstigatorActor);
-		FVector Location = CH->GetMesh()->GetAttachChildren().Last()->GetSocketLocation("Fire_Socket");
+		FVector Location = MeshComp->GetSocketLocation("Fire_Socket");
 		FRotator Rotation = (CH->GetPointUnderCursor() - Location).Rotation();
 		float RotationOffsetMin = CH->GetActorRotation().Yaw - 5;
-		float RotationOffsetMax = CH->GetActorRotation().Yaw + 5;
+		float RotationOffsetMax = CH->GetActorRotation().Yaw;
 		Rotation.Yaw = FMath::Clamp(Rotation.Yaw, RotationOffsetMin, RotationOffsetMax);
 		Rotation.Pitch = 0;
 		
@@ -66,9 +61,13 @@ void AVGunBase::PullTrigger(APawn* InstigatorPawn)
 	{
 		return;
 	}
-
 	InstigatorActor = InstigatorPawn;
-	InstigatorPawn->GetWorld()->GetTimerManager().SetTimer(ShootHandle, this, &AVGunBase::Shoot, FireRate, bIsAutoFire, 0.f);
+	if (!bIsAutoFire)
+	{
+		Shoot();
+		return;
+	}
+	InstigatorPawn->GetWorld()->GetTimerManager().SetTimer(ShootHandle, this, &AVGunBase::Shoot, FireRate, bIsAutoFire);
 }
 
 void AVGunBase::ReleaseTrigger(APawn* InstigatorPawn)

@@ -20,7 +20,7 @@ AVAmmoBase::AVAmmoBase()
 	MovementComp = CreateDefaultSubobject<UProjectileMovementComponent>("MovementComp");
 	MeshComp->SetupAttachment(RootComponent);
 
-	AmmoDamage = 50.f;
+	AmmoDamage = -50.f;
 	AmmoSpeed = 2000.f;
 	MovementComp->InitialSpeed = AmmoSpeed;
 	MovementComp->bRotationFollowsVelocity = true;

@@ -20,8 +20,6 @@ public:
 	// Sets default values for this actor's properties
 	AVGunBase();
 
-	virtual void Attack_Implementation(APawn* InstigatorPawn) override;
-
 	UPROPERTY(BlueprintAssignable)
 	FOnAmmoChanged OnAmmoChanged;
 
