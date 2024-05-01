@@ -22,6 +22,10 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
 
+	static UVAttributesComponent* GetAttributes(AActor* FromActor);
+	static bool IsActorAlive(AActor* Actor);
+	bool IsAlive();
+
 protected:
 
 	virtual void BeginPlay() override;

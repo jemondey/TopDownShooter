@@ -33,3 +33,26 @@ void UVAttributesComponent::ApplyHealthChange(AActor* InstigatorActor, float Del
 	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
 }
 
+UVAttributesComponent* UVAttributesComponent::GetAttributes(AActor* FromActor)
+{
+	if (FromActor)
+	{
+		return FromActor->FindComponentByClass<UVAttributesComponent>();
+	}
+	return nullptr;
+}
+
+bool UVAttributesComponent::IsActorAlive(AActor* Actor)
+{
+	UVAttributesComponent* AttributeComp = GetAttributes(Actor);
+	if (AttributeComp)
+	{
+		return AttributeComp->IsAlive();
+	}
+	return false;
+}
+
+bool UVAttributesComponent::IsAlive()
+{
+	return Health > 0.0f;
+}
