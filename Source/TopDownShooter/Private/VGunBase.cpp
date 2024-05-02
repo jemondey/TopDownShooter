@@ -8,7 +8,7 @@
 AVGunBase::AVGunBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -108,11 +108,3 @@ void AVGunBase::Reload()
 	CurrentAmmoAmount += AmountToLoad;
 	OnAmmoChanged.Broadcast(this, CurrentAmmoAmount, CarryAmmoAmount);
 }
-
-// Called every frame
-void AVGunBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

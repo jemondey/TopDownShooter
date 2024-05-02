@@ -22,8 +22,6 @@ public:
 	FName GetHandSocketName();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
@@ -45,9 +43,5 @@ protected:
 	FName CarrySocket;
 	UPROPERTY(VisibleAnywhere, Category = "DataAsset")
 	bool bCanBeCarried;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

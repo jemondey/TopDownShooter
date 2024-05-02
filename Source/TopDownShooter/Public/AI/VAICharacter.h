@@ -21,11 +21,6 @@ public:
 
 protected:
 
-	//UPROPERTY(EditDefaultsOnly, Category = "UI")
-	//TSubclassOf<UUserWidget> HealthBarWidgetClass;
-
-	//class USWorldUserWidget* ActiveHealthBar;
-
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UPawnSensingComponent* PawnSensingComp;
 	UPROPERTY(VisibleAnywhere, Category = "Components")

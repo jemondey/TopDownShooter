@@ -34,8 +34,4 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ammo Properties")
 	float AmmoSpeed;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

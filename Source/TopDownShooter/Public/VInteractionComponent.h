@@ -17,8 +17,6 @@ public:
 	UVInteractionComponent();
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly)
 	float TraceLength;
@@ -26,8 +24,6 @@ protected:
 	float TraceSphereRadius;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void Interact();
 };

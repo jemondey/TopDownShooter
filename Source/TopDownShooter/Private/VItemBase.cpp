@@ -11,7 +11,7 @@
 AVItemBase::AVItemBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComponent");
 	SphereComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
@@ -20,13 +20,6 @@ AVItemBase::AVItemBase()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
 	MeshComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	MeshComp->SetupAttachment(RootComponent);
-}
-
-// Called when the game starts or when spawned
-void AVItemBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 void AVItemBase::OnConstruction(const FTransform& Transform)
@@ -44,13 +37,6 @@ void AVItemBase::OnConstruction(const FTransform& Transform)
 	}
 }
 
-// Called every frame
-void AVItemBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void AVItemBase::Interact_Implementation(APawn* InstigatorPawn)
 {
 	UVItemDataAsset* DataAsset = Cast<UVItemDataAsset>(ItemDataAsset);
@@ -66,6 +52,7 @@ void AVItemBase::Interact_Implementation(APawn* InstigatorPawn)
 	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorToAdd, Location, Rotation, SpawnParams);
 	UVInventoryComponent* CMP = Cast<UVInventoryComponent>(InstigatorActor->FindComponentByClass(UVInventoryComponent::StaticClass()));
 	CMP->GrabItem(SpawnedActor, DataAsset, SlotNum, CarrySocket);
+	Destroy();
 }
 
 FName AVItemBase::GetCarrySocketName()

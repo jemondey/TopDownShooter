@@ -8,16 +8,11 @@
 #include "DrawDebugHelpers.h"
 #include "BrainComponent.h"
 #include "VAttributesComponent.h"
-//#include "Blueprint/UserWidget.h"
-//#include "SWorldUserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-//#include "SWorldUserWidget.h"
 
-// Sets default values
 AVAICharacter::AVAICharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("SensingComponent");
@@ -82,16 +77,6 @@ void AVAICharacter::OnHealthChanged(AActor* InstigatorActor, UVAttributesCompone
 		{
 			SetTargetActor(InstigatorActor);
 		}
-
-		/*if (ActiveHealthBar == nullptr)
-		{
-			ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
-			if (ActiveHealthBar)
-			{
-				ActiveHealthBar->AttachedActor = this;
-				ActiveHealthBar->AddToViewport();
-			}
-		}*/
 
 		if (NewHealth <= 0.0f)
 		{

@@ -6,11 +6,9 @@
 #include "VAttributesComponent.h"
 #include "Components/SphereComponent.h"
 
-// Sets default values
 AVAmmoBase::AVAmmoBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComponent");
 	RootComponent = SphereComp;
@@ -28,7 +26,6 @@ AVAmmoBase::AVAmmoBase()
 	MovementComp->ProjectileGravityScale = 0.0f;
 }
 
-// Called when the game starts or when spawned
 void AVAmmoBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -46,13 +43,4 @@ void AVAmmoBase::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 			Destroy();
 		}
 	}
-	
 }
-
-// Called every frame
-void AVAmmoBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

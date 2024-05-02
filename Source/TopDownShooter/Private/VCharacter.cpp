@@ -119,11 +119,6 @@ void AVCharacter::Heal()
 
 void AVCharacter::Attack()
 {
-	if (InventoryComp->GetCurrentItem() == nullptr)
-	{
-		return;
-	}
-
 	AVGunBase* Gun = Cast<AVGunBase>(InventoryComp->GetCurrentItem());
 	if (ensure(Gun))
 	{
@@ -133,11 +128,6 @@ void AVCharacter::Attack()
 
 void AVCharacter::StopAttack()
 {
-	if (InventoryComp->GetCurrentItem() == nullptr)
-	{
-		return;
-	}
-
 	AVGunBase* Gun = Cast<AVGunBase>(InventoryComp->GetCurrentItem());
 	if (ensure(Gun))
 	{

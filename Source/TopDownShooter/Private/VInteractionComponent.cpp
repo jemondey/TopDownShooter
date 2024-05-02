@@ -17,24 +17,6 @@ UVInteractionComponent::UVInteractionComponent()
 	TraceSphereRadius = 10.f;
 }
 
-
-// Called when the game starts
-void UVInteractionComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-// Called every frame
-void UVInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
 void UVInteractionComponent::Interact()
 {
 	AVCharacter* Owner = Cast<AVCharacter>(GetOwner());

@@ -33,8 +33,6 @@ public:
 	void SetSlotsNull(int32 SlotNum);
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 	int32 MaxSlots;
 	TArray<AActor*> SlotsArray;

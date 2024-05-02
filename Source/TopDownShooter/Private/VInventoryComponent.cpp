@@ -20,16 +20,6 @@ UVInventoryComponent::UVInventoryComponent()
 	SlotsDataArray.Init(nullptr, MaxSlots);
 }
 
-// Called when the game starts
-void UVInventoryComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
 // Called every frame
 void UVInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
