@@ -8,7 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "BrainComponent.h"
 #include "VAttributesComponent.h"
-#include "Blueprint/UserWidget.h"
+//#include "Blueprint/UserWidget.h"
 //#include "SWorldUserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
