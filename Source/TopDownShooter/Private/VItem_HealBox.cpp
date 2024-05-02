@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "VAttributesComponent.h"
 #include "VItem_HealBox.h"
+#include "VAttributesComponent.h"
 #include "VInventoryComponent.h"
 
 // Sets default values
