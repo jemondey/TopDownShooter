@@ -36,8 +36,8 @@ void AVGunBase::Shoot()
 		AVCharacter* CH = Cast<AVCharacter>(InstigatorActor);
 		FVector Location = MeshComp->GetSocketLocation("Fire_Socket");
 		FRotator Rotation = (CH->GetPointUnderCursor() - Location).Rotation();
-		float RotationOffsetMin = CH->GetActorRotation().Yaw - 5;
-		float RotationOffsetMax = CH->GetActorRotation().Yaw;
+		float RotationOffsetMin = InstigatorActor->GetActorRotation().Yaw - 5;
+		float RotationOffsetMax = InstigatorActor->GetActorRotation().Yaw;
 		Rotation.Yaw = FMath::Clamp(Rotation.Yaw, RotationOffsetMin, RotationOffsetMax);
 		Rotation.Pitch = 0;
 		
@@ -67,12 +67,18 @@ void AVGunBase::PullTrigger(APawn* InstigatorPawn)
 		Shoot();
 		return;
 	}
-	InstigatorPawn->GetWorld()->GetTimerManager().SetTimer(ShootHandle, this, &AVGunBase::Shoot, FireRate, bIsAutoFire);
+	if (ShootHandle.IsValid())
+	{
+		InstigatorActor->GetWorld()->GetTimerManager().SetTimer(ShootHandle, this, &AVGunBase::Shoot, FireRate, bIsAutoFire);
+	}
 }
 
 void AVGunBase::ReleaseTrigger(APawn* InstigatorPawn)
 {
-	InstigatorPawn->GetWorld()->GetTimerManager().ClearTimer(ShootHandle);
+	if (ShootHandle.IsValid())
+	{
+		InstigatorPawn->GetWorld()->GetTimerManager().ClearTimer(ShootHandle);
+	}
 }
 
 void AVGunBase::TryReload(APawn* InstigatorPawn)
@@ -84,27 +90,23 @@ void AVGunBase::TryReload(APawn* InstigatorPawn)
 
 	if (CurrentAmmoAmount < MaxAmmoAmount)
 	{
-		FString Message = "RELOADING";
-		GEngine->AddOnScreenDebugMessage(0, ReloadTime - 0.2f, FColor::Red, Message);
 		bCanShoot = false;
-		InstigatorPawn->GetWorld()->GetTimerManager().SetTimer(ShootHandle, this, &AVGunBase::Reload, ReloadTime);
+		InstigatorPawn->GetWorld()->GetTimerManager().SetTimer(ReloadHandle, this, &AVGunBase::Reload, ReloadTime);
 	}
+}
+
+void AVGunBase::Reload()
+{
+	int32 AmountToLoad = MaxAmmoAmount - CurrentAmmoAmount;
+	AmountToLoad = FMath::Clamp(AmountToLoad, 0, CarryAmmoAmount);
+	CarryAmmoAmount -= AmountToLoad;
+	CurrentAmmoAmount += AmountToLoad;
+	OnAmmoChanged.Broadcast(this, CurrentAmmoAmount, CarryAmmoAmount);
+	bCanShoot = true;
 }
 
 void AVGunBase::SetCarryAmmoAmount(int32 Amount)
 {
 	CarryAmmoAmount += Amount;
-	OnAmmoChanged.Broadcast(this, CurrentAmmoAmount, CarryAmmoAmount);
-}
-
-void AVGunBase::Reload()
-{
-	FString Message = "RELOADED";
-	GEngine->AddOnScreenDebugMessage(0, 0.4f, FColor::Green, Message);
-	bCanShoot = true;
-	int32 AmountToLoad = MaxAmmoAmount - CurrentAmmoAmount;
-	AmountToLoad = FMath::Clamp(AmountToLoad, 0, CarryAmmoAmount);
-	CarryAmmoAmount -= AmountToLoad;
-	CurrentAmmoAmount += AmountToLoad;
 	OnAmmoChanged.Broadcast(this, CurrentAmmoAmount, CarryAmmoAmount);
 }

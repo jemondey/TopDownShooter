@@ -36,9 +36,6 @@ protected:
 	
 	void Shoot();
 	void Reload();
-	
-	FTimerHandle ShootHandle;
-	FTimerHandle ReloadHandle;
 
 	AActor* InstigatorActor;
 
@@ -60,5 +57,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Gun Properties")
 	bool bIsAutoFire;
 	bool bCanShoot;
+
+private:
+
+	FTimerHandle ShootHandle;
+	FTimerHandle ReloadHandle;
 
 };

@@ -58,7 +58,7 @@ void AVCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AVCharacter::Interact);
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AVCharacter::Attack);
 	PlayerInputComponent->BindAction("Attack", IE_Released, this, &AVCharacter::StopAttack);
-	PlayerInputComponent->BindAction("Reload", IE_Released, this, &AVCharacter::Reload);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AVCharacter::Reload);
 	PlayerInputComponent->BindAction("Heal", IE_Pressed, this, &AVCharacter::Heal);
 }
 

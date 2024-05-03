@@ -7,6 +7,7 @@
 #include "VCharacter.h"
 #include "AI/VAICharacter.h"
 #include "VItemBase.h"
+#include "VAttributesComponent.h"
 
 void UVGameInstance::SaveGame()
 {
@@ -64,11 +65,16 @@ void UVGameInstance::LoadGame()
 	{
 		AVAICharacter* EnemyCharacter = LoadedSaveGame->EnemyCharacterArray[index];
 		FTransform EnemyTransform = LoadedSaveGame->EnemyPositionArray[index];
-		if (EnemyCharacter)
+		if (EnemyCharacter && !UVAttributesComponent::IsActorAlive(EnemyCharacter))
 		{
 			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			AVAICharacter* SpawnedEnemy = GetWorld()->SpawnActor<AVAICharacter>(EnemyCharacter->GetClass(), EnemyTransform, SpawnParams);
 			SpawnedEnemy->SpawnDefaultController();
+		}
+		else if(EnemyCharacter)
+		{
+			EnemyCharacter->SetActorTransform(EnemyTransform);
 		}
 	}
 }

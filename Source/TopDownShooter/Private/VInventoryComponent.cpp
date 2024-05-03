@@ -169,7 +169,7 @@ void UVInventoryComponent::UseHealBox()
 
 AActor* UVInventoryComponent::GetCurrentItem()
 {
-	if(CurrentItem != nullptr)
+	if(CurrentItem)
 	{
 		return CurrentItem;
 	}
