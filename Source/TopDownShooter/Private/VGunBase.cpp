@@ -62,14 +62,14 @@ void AVGunBase::PullTrigger(APawn* InstigatorPawn)
 		return;
 	}
 	InstigatorActor = InstigatorPawn;
-	if (!bIsAutoFire)
+	/*if (!bIsAutoFire)
 	{
 		Shoot();
 		return;
-	}
+	}*/
 	if (ShootHandle.IsValid())
 	{
-		InstigatorActor->GetWorld()->GetTimerManager().SetTimer(ShootHandle, this, &AVGunBase::Shoot, FireRate, bIsAutoFire);
+		InstigatorPawn->GetWorld()->GetTimerManager().SetTimer(ShootHandle, this, &AVGunBase::Shoot, FireRate, bIsAutoFire);
 	}
 }
 
